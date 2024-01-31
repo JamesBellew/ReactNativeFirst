@@ -19,16 +19,25 @@ console.log(item);
 setItemViewing(item)
 setModalVisible(true)
 }
-const addToCartHandler = ()=>{
+const addToCartHandler = (item)=>{
     setCartItemsCount(cartItemsCount+1)
     setModalVisible(false)
+    addItemToCart(item)
 }
+
+const addItemToCart = (item) => {
+    setCartItems(prevItems => [...prevItems, item]);
+};
+
 const [isCategoryPicked, setIsCategoryPicked] = useState(false)
 const [modalVisible, setModalVisible] = useState(false);
 const [categorySelected,setCategorySelected] = useState("All Clothing")
 const [itemViewing,setItemViewing]= useState({})
 const [cartItemsCount,setCartItemsCount]= useState(0)
 const [cartModalVisible,setCartModalVisible] = useState(false)
+const [cartItems, setCartItems] = useState([]);
+let cartTotalPrice=0
+
 
 
 
@@ -61,28 +70,28 @@ const [cartModalVisible,setCartModalVisible] = useState(false)
         {
             name:'Tank Top',
             img: require('../assets/jacket.png'),
-            price:'$89.99',
+            price:89.99,
             id:1,
             category:'Clothing'
         },
         {
             name:'LA Jumper',
             img: require('../assets/jumper.webp'),
-            price:'$119.99',
+            price:119.99,
             category:'Clothing',
             id:2
         },
         {
             name:'Strap',
             img: require('../assets/equip.png'),
-            price:'$19.99',
+            price:19.99,
             category:'Equipment',
             id:3
         },
         {
             name:'Tank Top',
             img: require('../assets/jacket.png'),
-            price:'$89.99',
+            price:89.99,
             category:'Clothing',
             id:4
         }
@@ -90,35 +99,35 @@ const [cartModalVisible,setCartModalVisible] = useState(false)
         {
             name:'Tank Top',
             img: require('../assets/jacket.png'),
-            price:'$89.99',
+            price:89.99,
             category:'Clothing',
             id:5
         },
         {
             name:'Nike Dunks',
             img: require('../assets/kicks.png'),
-            price:'$89.99',
+            price:89.99,
             category:'kicks',
             id:6
         },
         {
             name:'Nike Dunks',
             img: require('../assets/kicks.png'),
-            price:'$89.99',
+            price:89.99,
             category:'Kicks',
             id:7
         },
         {
             name:'Nike Air Force',
             img: require('../assets/kicks.png'),
-            price:'$119.99',
+            price:119.99,
             category:'Kicks',
             id:7
         },
         {
             name:'Tank Top',
             img: require('../assets/jacket.png'),
-            price:'$89.99',
+            price:89.99,
             category:'Clothing',
             id:8
         }
@@ -154,27 +163,34 @@ const [cartModalVisible,setCartModalVisible] = useState(false)
           Alert.alert('Modal has been closed.');
           setModalVisible(!modalVisible);
         }}>
-             <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+             <TouchableWithoutFeedback onPress={() => setCartModalVisible(false)}>
         <View style={styles.centeredView}>
           <View style={{...styles.modalView,backgroundColor:'white'}}>
 <View style={{flex:7,backgroundColor:'white',width:'100%',marginBottom:10}}>
-<View style={{width:'100%',flexDirection:'row', backgroundColor:'#F0F1F3',alignItems:'center',borderRadius:10}}>
 
-    <Image source={require('../assets/jacket.png')} style={{padding:20,flex:2,height:175}}/>
+{cartItems.map((cart, index) => (
+    
+    cartTotalPrice += cart.price,
+<View key={index} style={{width:'100%',flexDirection:'row', backgroundColor:'#F0F1F3',alignItems:'center',borderRadius:10,marginBottom:10}}>
+
+
+
+    <Image source={cart.img} style={{padding:20,flex:2,height:100}}/>
     <View style={{flex:4,justifyContent:'center'}}>
 
-        <Text style={{...styles.header1,marginBottom:20}}>Black Jumper</Text>
+        <Text style={{...styles.header1,marginBottom:20}}>{cart.name}</Text>
    
-        <Text style={{...styles.header1, fontWeight:'bold',fontSize:20}}>$49.99</Text>
+        <Text style={{...styles.header1, fontWeight:'bold',fontSize:20}}>${cart.price}</Text>
     </View>
     <Text style={{padding:20,flex:1}}> <FontAwesome name="trash" size={30} color="indigo" /></Text>
     </View>
+    ))}
 </View>
 
 <View style={{flex:1,backgroundColor:'white',width:'100%',flexDirection:'row'}}>
 <View style={{flex:1,flexDirection:'row'}}>
     <Pressable onPress={addToCartHandler} style={{backgroundColor:'indigo',flex:4,justifyContent:'center',alignItems:'center',borderRadius:10,marginHorizontal:10}}>
-        <Text style={{...styles.header1,color:"white"}}>Buy Now $250</Text>
+        <Text style={{...styles.header1,color:"white"}}>${cartTotalPrice}</Text>
     </Pressable>
 
     </View>
@@ -207,12 +223,12 @@ const [cartModalVisible,setCartModalVisible] = useState(false)
     <Text style={styles.header1}>{itemViewing.name}</Text>
     <Text style={styles.header1}>Size : Medium</Text>
     <Text style={{textAlign:'center',marginVertical:15}}> Commodo deserunt sint ipsum fugiat occaecat irure aute incididunt. Esse ex laborum cupidatat irure Lorem nostrud in est incididunt. Eiusmod aliqua mollit occaecat amet.</Text>
-    <Text style={{...styles.header1,fontSize:29}}>{itemViewing.price}</Text>
+    <Text style={{...styles.header1,fontSize:29}}>${itemViewing.price}</Text>
     
 </View>
 <View style={{flex:1,backgroundColor:'white',width:'100%',flexDirection:'row'}}>
 <View style={{flex:1,flexDirection:'row'}}>
-    <Pressable onPress={addToCartHandler} style={{backgroundColor:'indigo',flex:4,justifyContent:'center',alignItems:'center',borderRadius:10,marginHorizontal:10}}>
+    <Pressable onPress={()=> addToCartHandler(itemViewing)} style={{backgroundColor:'indigo',flex:4,justifyContent:'center',alignItems:'center',borderRadius:10,marginHorizontal:10}}>
         <Text style={{...styles.header1,color:"white"}}>Add To Cart</Text>
     </Pressable>
     <Pressable onPress={addToCartHandler} style={{backgroundColor:'lightgrey',flex:1,justifyContent:'center',alignItems:'center',borderRadius:10,marginHorizontal:10}}>
@@ -261,7 +277,7 @@ items.filter(item => item.category === categorySelected).map((item, index) => (
         <Image source={item.img} style={{flex: 2, width: '100%', height: '100%'}} />
         <View style={{flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center'}}>
             <Text>{item.name}</Text>
-            <Text style={{fontWeight: 'bold', fontSize: 17}}>{item.price}</Text>
+            <Text style={{fontWeight: 'bold', fontSize: 17}}>${item.price}</Text>
         </View>
     </Pressable>
 ))
@@ -285,13 +301,13 @@ items.filter(item => item.category === categorySelected).map((item, index) => (
                     <View style={styles.iconContainer}>
                     <FontAwesome name="gear" size={30} color="indigo" />
                     </View>
-                    <View style={styles.iconContainer}>
+                    <Pressable onPress={()=> setCartModalVisible(!cartModalVisible)} style={styles.iconContainer}>
                         {cartItemsCount>0 &&
                     <View style={styles.badgeContainer}>
             <Text style={styles.badgeText}>{cartItemsCount}</Text> 
         </View> }
                     <FontAwesome name="cart-plus" size={30} color="indigo" />
-                    </View>
+                    </Pressable>
                     <View style={styles.iconContainer}>
                     <FontAwesome name="user" size={30} color="indigo" />
 
