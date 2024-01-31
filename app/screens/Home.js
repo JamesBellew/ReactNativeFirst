@@ -28,6 +28,11 @@ const addToCartHandler = (item)=>{
 const addItemToCart = (item) => {
     setCartItems(prevItems => [...prevItems, item]);
 };
+const deleteItemFromCart = (itemId) => {
+    setCartItems(currentItems => currentItems.filter(item => item.id !== itemId));
+    setCartItemsCount(cartItemsCount-1)
+};
+
 
 const [isCategoryPicked, setIsCategoryPicked] = useState(false)
 const [modalVisible, setModalVisible] = useState(false);
@@ -134,15 +139,14 @@ let cartTotalPrice=0
     ]
     return (
         <>
-            <SafeAreaView style={styles.mainDiv}>
-                <ScrollView style={styles.scrollView}>
+            <View style={styles.mainDiv}>
+                <ScrollView style={{...styles.scrollView,margin:10,marginVertical:20}}>
                    
-
 
                 { !isCategoryPicked && categories.map((category, index) => (
                 <Pressable
                 onPress={()=>categoryClickedHanlder(category.name)}
-                key={index} style={styles.category}>
+                key={index} style={{...styles.category,marginTop:10}}>
                     <View style={styles.categoryText}>
                         <Text style={styles.header1}>{category.name}</Text>
                     </View>
@@ -168,10 +172,15 @@ let cartTotalPrice=0
           <View style={{...styles.modalView,backgroundColor:'white'}}>
 <View style={{flex:7,backgroundColor:'white',width:'100%',marginBottom:10}}>
 
-{cartItems.map((cart, index) => (
+{ cartItems.length === 0 ? (
+        // Render this view when cart is empty
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Text style={styles.header1}>Nothing in cart</Text>
+        </View>
+    ) : (cartItems.map((cart, index) => (
     
     cartTotalPrice += cart.price,
-<View key={index} style={{width:'100%',flexDirection:'row', backgroundColor:'#F0F1F3',alignItems:'center',borderRadius:10,marginBottom:10}}>
+<View key={index} style={{width:'100%',flexDirection:'row',height:150, backgroundColor:'#F0F1F3',alignItems:'center',borderRadius:10,marginBottom:10}}>
 
 
 
@@ -182,9 +191,23 @@ let cartTotalPrice=0
    
         <Text style={{...styles.header1, fontWeight:'bold',fontSize:20}}>${cart.price}</Text>
     </View>
-    <Text style={{padding:20,flex:1}}> <FontAwesome name="trash" size={30} color="indigo" /></Text>
+    
+    <View style={{
+    padding: 20,
+    flex: 1,
+    height:'100%',
+    justifyContent: 'center',
+    alignItems: 'center'
+}}>
+    <Pressable onPress={()=> deleteItemFromCart(cart.id)} style={{
+        justifyContent: 'center',
+        alignItems: 'center'
+    }}>
+        <FontAwesome name="trash" size={30} color="indigo" />
+    </Pressable>
+</View>
     </View>
-    ))}
+    )))}
 </View>
 
 <View style={{flex:1,backgroundColor:'white',width:'100%',flexDirection:'row'}}>
@@ -296,24 +319,24 @@ items.filter(item => item.category === categorySelected).map((item, index) => (
 
                 <View style={styles.bottomNav}>
                     <View style={styles.iconContainer}>
-                        <Icon name="home" size={30} color="indigo" />
+                        <Icon name="home" size={30} color="#373737" />
                     </View>
                     <View style={styles.iconContainer}>
-                    <FontAwesome name="gear" size={30} color="indigo" />
+                    <FontAwesome name="gear" size={30} color="#373737" />
                     </View>
                     <Pressable onPress={()=> setCartModalVisible(!cartModalVisible)} style={styles.iconContainer}>
                         {cartItemsCount>0 &&
                     <View style={styles.badgeContainer}>
             <Text style={styles.badgeText}>{cartItemsCount}</Text> 
         </View> }
-                    <FontAwesome name="cart-plus" size={30} color="indigo" />
+                    <FontAwesome name="cart-plus" size={30} color="#373737" />
                     </Pressable>
                     <View style={styles.iconContainer}>
-                    <FontAwesome name="user" size={30} color="indigo" />
+                    <FontAwesome name="user" size={30} color="#373737" />
 
                     </View>
                 </View>
-            </SafeAreaView>
+            </View>
         </>
     );
 }
