@@ -24,15 +24,43 @@ const addToCartHandler = (item)=>{
     setModalVisible(false)
     addItemToCart(item)
 }
-
-const addItemToCart = (item) => {
-    setCartItems(prevItems => [...prevItems, item]);
+const updateStock = (cartItems) => {
+    const newItems = items.map(item => {
+      const foundCartItem = cartItems.find(cartItem => cartItem.id === item.id);
+      return foundCartItem ? {...item, stock: item.stock - 1} : item;
+    });
+    setItems(newItems);
+  };
+  const addItemToCart = (item) => {
+    setCartItems(prevItems => [
+        ...prevItems, 
+        {...item, cartItemId: nextCartItemId}
+    ]);
+    setNextCartItemId(nextCartItemId + 1);
 };
-const deleteItemFromCart = (itemId) => {
-    setCartItems(currentItems => currentItems.filter(item => item.id !== itemId));
-    setCartItemsCount(cartItemsCount-1)
+const deleteItemFromCart = (cartItemId) => {
+    console.log('We have a problem');
+    console.log('This is the current items in cart:\n', cartItems);
+    console.log('We want to delete the following cartItemIDs from it ', cartItemId);
+
+    setCartItems(currentItems => currentItems.filter(item => item.cartItemId !== cartItemId));
+    setCartItemsCount(cartItemsCount => cartItemsCount - 1);
 };
 
+const buyItemsHandler = ()=>{
+console.log('lets work with the below items');
+// decrease the stock
+updateStock(cartItems)
+//remove items from cart
+setCartItems([])
+
+//set the cart count
+setCartItemsCount(0)
+
+//close the modal 
+setCartModalVisible(false)
+console.log(cartItems);
+}
 
 const [isCategoryPicked, setIsCategoryPicked] = useState(false)
 const [modalVisible, setModalVisible] = useState(false);
@@ -41,6 +69,8 @@ const [itemViewing,setItemViewing]= useState({})
 const [cartItemsCount,setCartItemsCount]= useState(0)
 const [cartModalVisible,setCartModalVisible] = useState(false)
 const [cartItems, setCartItems] = useState([]);
+// State to keep track of the next cartItemId
+const [nextCartItemId, setNextCartItemId] = useState(1);
 let cartTotalPrice=0
 
 
@@ -71,34 +101,38 @@ let cartTotalPrice=0
 
 }
     ]
-    const items = [
+    const [items,setItems] = useState([
         {
             name:'Tank Top',
             img: require('../assets/jacket.png'),
             price:89.99,
             id:1,
-            category:'Clothing'
+            category:'Clothing',
+            stock:10
         },
         {
             name:'LA Jumper',
             img: require('../assets/jumper.webp'),
             price:119.99,
             category:'Clothing',
-            id:2
+            id:2,
+            stock:10
         },
         {
             name:'Strap',
             img: require('../assets/equip.png'),
             price:19.99,
             category:'Equipment',
-            id:3
+            id:3,
+            stock:10
         },
         {
             name:'Tank Top',
             img: require('../assets/jacket.png'),
             price:89.99,
             category:'Clothing',
-            id:4
+            id:4,
+            stock:10
         }
         ,
         {
@@ -106,37 +140,42 @@ let cartTotalPrice=0
             img: require('../assets/jacket.png'),
             price:89.99,
             category:'Clothing',
-            id:5
+            id:5,
+            stock:10
         },
         {
             name:'Nike Dunks',
             img: require('../assets/kicks.png'),
             price:89.99,
             category:'kicks',
-            id:6
+            id:6,
+            stock:1
         },
         {
             name:'Nike Dunks',
             img: require('../assets/kicks.png'),
             price:89.99,
             category:'Kicks',
-            id:7
+            id:7,
+            stock:1
         },
         {
             name:'Nike Air Force',
             img: require('../assets/kicks.png'),
             price:119.99,
             category:'Kicks',
-            id:7
+            id:8,
+            stock:10
         },
         {
             name:'Tank Top',
             img: require('../assets/jacket.png'),
             price:89.99,
             category:'Clothing',
-            id:8
+            id:9,
+            stock:10
         }
-    ]
+    ])
     return (
         <>
             <View style={styles.mainDiv}>
@@ -180,6 +219,7 @@ style={{backgroundColor:'red'}}
         </View>
     ) : (
         <ScrollView>
+            <Pressable onPress={()=> setCartModalVisible(false)} style={{width:100,padding:10,borderRadius:10,backgroundColor:'#F0F1F3',textAlign:'center',justifyContent:'center',alignContent:'center',marginBottom:10}}><Text style={{flex:1,alignContent:'center',justifyContent:'center',alignSelf:'center',fontWeight:'bold'}}>X Close</Text></Pressable>
           {cartItems.map((cart, index) => {
             cartTotalPrice += cart.price;
             return (
@@ -192,12 +232,12 @@ style={{backgroundColor:'red'}}
                   <Text style={{ ...styles.header1, fontWeight: 'bold', fontSize: 20 }}>${cart.price.toFixed(2)}</Text>
                 </View>
                 <View style={{ padding:5, flex: 1, height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                  <Pressable onPress={() => deleteItemFromCart(cart.id)} style={{ justifyContent: 'center', alignItems: 'center' }}>
+                  <Pressable onPress={() => deleteItemFromCart(cart.cartItemId)} style={{ justifyContent: 'center', alignItems: 'center' }}>
                     <FontAwesome name="heart" size={25} color="#373737" />
                   </Pressable>
                 </View>
                 <View style={{ padding:10, flex: 1, height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                  <Pressable onPress={() => deleteItemFromCart(cart.id)} style={{ justifyContent: 'center', alignItems: 'center' }}>
+                  <Pressable onPress={() => deleteItemFromCart(cart.cartItemId)} style={{ justifyContent: 'center', alignItems: 'center' }}>
                     <FontAwesome name="trash" size={25} color="#373737" />
                   </Pressable>
                 </View>
@@ -213,7 +253,7 @@ style={{backgroundColor:'red'}}
 
 {cartItems.length > 0 ? (
 
-    <Pressable onPress={()=>setCartModalVisible(false)} style={{backgroundColor:'indigo',flex:1,justifyContent:'center',alignItems:'center',borderRadius:10,marginHorizontal:10}}>
+    <Pressable onPress={buyItemsHandler} style={{backgroundColor:'indigo',flex:1,justifyContent:'center',alignItems:'center',borderRadius:10,marginHorizontal:10}}>
         <Text style={{...styles.header1,color:"white"}}>Buy Now ${cartTotalPrice.toFixed(2)}</Text>
     </Pressable>
 
@@ -253,6 +293,7 @@ style={{backgroundColor:'red'}}
 <View style={{backgroundColor:'white',flex:4,width:'100%',justifyContent:'center', alignItems:'center'}}>
     <Text style={styles.header1}>{itemViewing.name}</Text>
     <Text style={styles.header1}>Size : Medium</Text>
+    <Text >Stock : {itemViewing.stock}</Text>
     <Text style={{textAlign:'center',marginVertical:15}}> Commodo deserunt sint ipsum fugiat occaecat irure aute incididunt. Esse ex laborum cupidatat irure Lorem nostrud in est incididunt. Eiusmod aliqua mollit occaecat amet.</Text>
     <Text style={{...styles.header1,fontSize:29}}>${itemViewing.price}</Text>
     
