@@ -160,6 +160,7 @@ let cartTotalPrice=0
 
 
 <Modal
+style={{backgroundColor:'red'}}
         animationType="slide"
         transparent={true}
         visible={cartModalVisible}
@@ -167,8 +168,8 @@ let cartTotalPrice=0
           Alert.alert('Modal has been closed.');
           setModalVisible(!modalVisible);
         }}>
-             <TouchableWithoutFeedback onPress={() => setCartModalVisible(false)}>
-        <View style={styles.centeredView}>
+             {/* <TouchableWithoutFeedback onPress={() => setCartModalVisible(false)}> */}
+        <View style={{...styles.centeredView}} >
           <View style={{...styles.modalView,backgroundColor:'white'}}>
 <View style={{flex:7,backgroundColor:'white',width:'100%',marginBottom:10}}>
 
@@ -177,44 +178,51 @@ let cartTotalPrice=0
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Text style={styles.header1}>Nothing in cart</Text>
         </View>
-    ) : (cartItems.map((cart, index) => (
-    
-    cartTotalPrice += cart.price,
-<View key={index} style={{width:'100%',flexDirection:'row',height:150, backgroundColor:'#F0F1F3',alignItems:'center',borderRadius:10,marginBottom:10}}>
-
-
-
-    <Image source={cart.img} style={{padding:20,flex:2,height:100}}/>
-    <View style={{flex:4,justifyContent:'center'}}>
-
-        <Text style={{...styles.header1,marginBottom:20}}>{cart.name}</Text>
-   
-        <Text style={{...styles.header1, fontWeight:'bold',fontSize:20}}>${cart.price}</Text>
+    ) : (
+        <ScrollView>
+          {cartItems.map((cart, index) => {
+            cartTotalPrice += cart.price;
+            return (
+              <View key={index} style={{ width: '100%', flexDirection: 'row', height: 100, backgroundColor: '#F0F1F3', alignItems: 'center', borderRadius: 10, marginBottom: 10 }}>
+                <Image source={cart.img} style={{ paddingVertical: 20,paddingHorizontal:5, flex: 3, height: '100%' ,marginVertical:25}} />
+                <View style={{ flex: 5, justifyContent: 'center' }}>
+                  <Text style={{ ...styles.header1}}>{cart.name}</Text>
+                  <Text style={{  }}>Medium</Text>
+                  <Text style={{  }}>1</Text>
+                  <Text style={{ ...styles.header1, fontWeight: 'bold', fontSize: 20 }}>${cart.price.toFixed(2)}</Text>
+                </View>
+                <View style={{ padding:5, flex: 1, height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                  <Pressable onPress={() => deleteItemFromCart(cart.id)} style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <FontAwesome name="heart" size={25} color="#373737" />
+                  </Pressable>
+                </View>
+                <View style={{ padding:10, flex: 1, height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                  <Pressable onPress={() => deleteItemFromCart(cart.id)} style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <FontAwesome name="trash" size={25} color="#373737" />
+                  </Pressable>
+                </View>
+              </View>
+            );
+          })}
+        </ScrollView>
+      )}
     </View>
-    
-    <View style={{
-    padding: 20,
-    flex: 1,
-    height:'100%',
-    justifyContent: 'center',
-    alignItems: 'center'
-}}>
-    <Pressable onPress={()=> deleteItemFromCart(cart.id)} style={{
-        justifyContent: 'center',
-        alignItems: 'center'
-    }}>
-        <FontAwesome name="trash" size={30} color="indigo" />
-    </Pressable>
-</View>
-    </View>
-    )))}
-</View>
 
-<View style={{flex:1,backgroundColor:'white',width:'100%',flexDirection:'row'}}>
-<View style={{flex:1,flexDirection:'row'}}>
-    <Pressable onPress={addToCartHandler} style={{backgroundColor:'indigo',flex:4,justifyContent:'center',alignItems:'center',borderRadius:10,marginHorizontal:10}}>
-        <Text style={{...styles.header1,color:"white"}}>${cartTotalPrice}</Text>
+<View style={{flex:1,width:'100%',flexDirection:'row',height:50,top:30}}>
+<View style={{flex:1,flexDirection:'row',height:50}}>
+
+{cartItems.length > 0 ? (
+
+    <Pressable onPress={()=>setCartModalVisible(false)} style={{backgroundColor:'indigo',flex:1,justifyContent:'center',alignItems:'center',borderRadius:10,marginHorizontal:10}}>
+        <Text style={{...styles.header1,color:"white"}}>Buy Now ${cartTotalPrice.toFixed(2)}</Text>
     </Pressable>
+
+): (
+    <Pressable onPress={()=>setCartModalVisible(false)} style={{backgroundColor:'indigo',flex:4,marginHorizontal:100,justifyContent:'center',alignItems:'center',borderRadius:10,marginHorizontal:10}}>
+    <Text style={{...styles.header1,color:"white"}}>Back</Text>
+</Pressable>
+)
+}
 
     </View>
 
@@ -224,7 +232,7 @@ let cartTotalPrice=0
           
 
         </View>
-        </TouchableWithoutFeedback>
+        {/* </TouchableWithoutFeedback> */}
       </Modal>
 
 {isCategoryPicked && 
