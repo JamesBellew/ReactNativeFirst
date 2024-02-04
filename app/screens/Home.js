@@ -293,16 +293,27 @@ style={{backgroundColor:'red'}}
 <View style={{backgroundColor:'white',flex:4,width:'100%',justifyContent:'center', alignItems:'center'}}>
     <Text style={styles.header1}>{itemViewing.name}</Text>
     <Text style={styles.header1}>Size : Medium</Text>
-    <Text >Stock : {itemViewing.stock}</Text>
+    {/* <Text >Stock : {itemViewing.stock}</Text> */}
     <Text style={{textAlign:'center',marginVertical:15}}> Commodo deserunt sint ipsum fugiat occaecat irure aute incididunt. Esse ex laborum cupidatat irure Lorem nostrud in est incididunt. Eiusmod aliqua mollit occaecat amet.</Text>
     <Text style={{...styles.header1,fontSize:29}}>${itemViewing.price}</Text>
+    <Text style={{fontSize: 10}}>
+                {itemViewing.stock == 0 ? " Out of Stock" : itemViewing.stock + ' Left'}
+                </Text>
     
 </View>
 <View style={{flex:1,backgroundColor:'white',width:'100%',flexDirection:'row'}}>
 <View style={{flex:1,flexDirection:'row'}}>
+    {itemViewing.stock >0 ? 
     <Pressable onPress={()=> addToCartHandler(itemViewing)} style={{backgroundColor:'indigo',flex:4,justifyContent:'center',alignItems:'center',borderRadius:10,marginHorizontal:10}}>
         <Text style={{...styles.header1,color:"white"}}>Add To Cart</Text>
     </Pressable>
+
+    :
+
+    <Pressable  style={{backgroundColor:'#373737',flex:4,justifyContent:'center',alignItems:'center',borderRadius:10,marginHorizontal:10}}>
+    <Text style={{...styles.header1,color:"white"}}>Out Of Stock</Text>
+</Pressable>
+}
     <Pressable onPress={addToCartHandler} style={{backgroundColor:'lightgrey',flex:1,justifyContent:'center',alignItems:'center',borderRadius:10,marginHorizontal:10}}>
         <Text style={{...styles.header1,color:"black"}}>1</Text>
     </Pressable>
@@ -350,6 +361,9 @@ items.filter(item => item.category === categorySelected).map((item, index) => (
         <View style={{flex: 1, width: '100%', justifyContent: 'center', alignItems: 'center'}}>
             <Text>{item.name}</Text>
             <Text style={{fontWeight: 'bold', fontSize: 17}}>${item.price}</Text>
+            <Text style={{fontSize: 10}}>
+                {item.stock == 0 ? " Out of Stock" : item.stock + ' Left'}
+                </Text>
         </View>
     </Pressable>
 ))
