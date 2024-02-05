@@ -3,6 +3,7 @@ import { View, StyleSheet, ScrollView, Text, Image, Pressable, ImageBackground ,
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import NewItem from './NewItem';
 
 
 function Home(props) {
@@ -69,6 +70,7 @@ const [itemViewing,setItemViewing]= useState({})
 const [cartItemsCount,setCartItemsCount]= useState(0)
 const [cartModalVisible,setCartModalVisible] = useState(false)
 const [cartItems, setCartItems] = useState([]);
+const [isNewItemModalShowing,setIsNewItemModalShowing] = useState(true)
 // State to keep track of the next cartItemId
 const [nextCartItemId, setNextCartItemId] = useState(1);
 let cartTotalPrice=0
@@ -195,7 +197,7 @@ let cartTotalPrice=0
                 </Pressable>
             ))}
 
-
+<NewItem/>
 
 
 <Modal
@@ -297,7 +299,7 @@ style={{backgroundColor:'red'}}
     <Text style={{textAlign:'center',marginVertical:15}}> Commodo deserunt sint ipsum fugiat occaecat irure aute incididunt. Esse ex laborum cupidatat irure Lorem nostrud in est incididunt. Eiusmod aliqua mollit occaecat amet.</Text>
     <Text style={{...styles.header1,fontSize:29}}>${itemViewing.price}</Text>
     <Text style={{fontSize: 10}}>
-                {itemViewing.stock == 0 ? " Out of Stock" : itemViewing.stock + ' Left'}
+                {itemViewing.stock == 0 ? " More comming Soon" : itemViewing.stock + ' Left'}
                 </Text>
     
 </View>
@@ -314,9 +316,9 @@ style={{backgroundColor:'red'}}
     <Text style={{...styles.header1,color:"white"}}>Out Of Stock</Text>
 </Pressable>
 }
-    <Pressable onPress={addToCartHandler} style={{backgroundColor:'lightgrey',flex:1,justifyContent:'center',alignItems:'center',borderRadius:10,marginHorizontal:10}}>
+    {/* <Pressable onPress={addToCartHandler} style={{backgroundColor:'lightgrey',flex:1,justifyContent:'center',alignItems:'center',borderRadius:10,marginHorizontal:10}}>
         <Text style={{...styles.header1,color:"black"}}>1</Text>
-    </Pressable>
+    </Pressable> */}
     </View>
 
 </View>
@@ -385,7 +387,7 @@ items.filter(item => item.category === categorySelected).map((item, index) => (
                         <Icon name="home" size={30} color="#373737" />
                     </View>
                     <View style={styles.iconContainer}>
-                    <FontAwesome name="gear" size={30} color="#373737" />
+                    <FontAwesome name="plus" size={30} color="#373737" />
                     </View>
                     <Pressable onPress={()=> setCartModalVisible(!cartModalVisible)} style={styles.iconContainer}>
                         {cartItemsCount>0 &&
