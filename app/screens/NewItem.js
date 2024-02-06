@@ -1,18 +1,31 @@
 import React, { useState } from 'react';
-
+import RNPickerSelect from 'react-native-picker-select';
 import {StyleSheet, View,Text, Image, Pressable,Modal, TouchableWithoutFeedback, TextInput, Button} from 'react-native';
 
 function NewItem(props) {
     const [modalVisible, setModalVisible] = useState(true);
     // const [text, setText] = useState('');
-
+    const [selectedCategoryValue, setSelectedValue] = useState(null);
     const [newItemName, setNewItemName] = useState('');
     const [newItemPrice, setNewItemPrice] = useState('');
     const [newItemDesc, setNewItemDesc] = useState('');
+    const [newItemStock, setNewItemStock] = useState(1);
+
+    const categories = [
+      { label: 'Clothing', value: 'Clothing' },
+      { label: 'Jumpers', value: 'Jumpers' },
+      { label: 'Kicks', value: 'Kicks' },
+      { label: 'Equipment', value: 'Equipment' },
+
+  ];
     const handlePriceChange = (text) => {
       const filteredText = text.replace(/[^0-9.]/g, ''); // Allows numbers and decimal point
       setNewItemPrice(filteredText);
   };
+  const handleStockChange = (text) => {
+    const filteredText = text.replace(/[^0-9.]/g, ''); // Allows numbers and decimal point
+    setNewItemStock(filteredText);
+};
     const handleSubmit = () => {
       // console.log('Submitted Name:', newItemName);
       // console.log('Submitted Price:', newItemPrice);
@@ -25,6 +38,9 @@ function NewItem(props) {
         name: newItemName,
         price: newItemPrice,
         description: newItemDesc,
+        stock:newItemStock,
+        category:selectedCategoryValue,
+        img: require('../assets/jacket.png'),
         // Add other fields if necessary
     };
 
@@ -83,7 +99,7 @@ function NewItem(props) {
 
     </View>
 
-    <Text style={{padding:10,marginTop:10}}>Item Description</Text>
+    <Text style={{padding:10,marginTop:10}}>Item desc</Text>
             <View
       style={{
         backgroundColor: newItemDesc,
@@ -100,6 +116,30 @@ function NewItem(props) {
             style={styles.textInput}
         />
     </View>
+    <Text style={{padding:10,marginTop:10}}>Item Stock</Text>
+            <View
+      style={{
+        backgroundColor: newItemStock,
+        borderBottomColor: '#000000',
+        borderBottomWidth: 1,
+      }}>
+             <TextInput
+                            editable
+                            keyboardType='numeric'
+                            onChangeText={handleStockChange}
+                            value={newItemStock}
+                            style={{padding: 10}}
+                        />
+
+    </View>
+
+    <View style={{ backgroundColor:'#f1f1f1', padding:10,marginTop:20,borderRadius:10}}>
+            <RNPickerSelect
+                onValueChange={(value) => setSelectedValue(value)}
+                items={categories}
+                placeholder={{ label: 'Select a category', value: null }}
+            />
+        </View>
             </View>
 
 <Pressable onPress={handleSubmit} style={{

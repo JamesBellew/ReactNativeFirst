@@ -11,6 +11,7 @@ function Home(props) {
         setIsNewItemModalShowing(false)
         console.log(newData);
         // setItemsData(prevData => [...prevData, newData]);
+        setItems(prevData => [...prevData, newData])
         // Do something with the newData, like adding it to an array
     };
 const categoryClickedHanlder = (categoryname)=>{
