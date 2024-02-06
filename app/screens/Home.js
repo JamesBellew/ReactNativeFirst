@@ -7,7 +7,12 @@ import NewItem from './NewItem';
 
 
 function Home(props) {
-    
+    const handleNewItemData = (newData) => {
+        setIsNewItemModalShowing(false)
+        console.log(newData);
+        // setItemsData(prevData => [...prevData, newData]);
+        // Do something with the newData, like adding it to an array
+    };
 const categoryClickedHanlder = (categoryname)=>{
     setIsCategoryPicked(true)
     setCategorySelected(categoryname);
@@ -196,8 +201,10 @@ let cartTotalPrice=0
                     </View>
                 </Pressable>
             ))}
+{isNewItemModalShowing &&
+<NewItem onNewItemSubmit={handleNewItemData}/>
 
-<NewItem/>
+}
 
 
 <Modal

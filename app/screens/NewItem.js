@@ -6,10 +6,32 @@ function NewItem(props) {
     const [modalVisible, setModalVisible] = useState(true);
     // const [text, setText] = useState('');
 
+    const [newItemName, setNewItemName] = useState('');
+    const [newItemPrice, setNewItemPrice] = useState('');
+    const [newItemDesc, setNewItemDesc] = useState('');
+    const handlePriceChange = (text) => {
+      const filteredText = text.replace(/[^0-9.]/g, ''); // Allows numbers and decimal point
+      setNewItemPrice(filteredText);
+  };
     const handleSubmit = () => {
-      // Here you can handle the submission of the text
-      console.log('Submitted text:', text);
+      // console.log('Submitted Name:', newItemName);
+      // console.log('Submitted Price:', newItemPrice);
+      // console.log('Submitted Description:', newItemDesc);
+
+
+
+
+      const itemData = {
+        name: newItemName,
+        price: newItemPrice,
+        description: newItemDesc,
+        // Add other fields if necessary
     };
+
+    // Call the parent callback function with the new item data
+    props.onNewItemSubmit(itemData);
+      // Add submission logic here
+  };
     return (
      <>
      <Modal
@@ -20,30 +42,88 @@ function NewItem(props) {
           Alert.alert('Modal has been closed.');
           setModalVisible(!modalVisible);
         }}>
-             <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+         
         <View style={styles.centeredView}>
           <View style={{...styles.modalView,backgroundColor:'white'}}>
-<Text>Add a New Item</Text>
-<TextInput
-        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-        placeholder="Enter text"
-        // onChangeText={setText}
-      />
-      <Button
-        onPress={handleSubmit}
-        title="Submit"
-      />
+            <View style={{flex:1,flexDirection:'column', width:'100%'}}>
+
+            <View style={{flex:4}}>
+              <Text style={{padding:10}}>Item Name</Text>
+            <View
+      style={{
+        backgroundColor: newItemName,
+        borderBottomColor: '#000000',
+        borderBottomWidth: 1,
+      }}>
+        <TextInput
+            editable
+            multiline
+            numberOfLines={4}
+            maxLength={40}
+            onChangeText={setNewItemName} // Corrected
+            value={newItemName}
+            style={styles.textInput}
+        />
+
+    </View>
+    <Text style={{padding:10,marginTop:10}}>Item Price</Text>
+            <View
+      style={{
+        backgroundColor: newItemPrice,
+        borderBottomColor: '#000000',
+        borderBottomWidth: 1,
+      }}>
+             <TextInput
+                            editable
+                            keyboardType='numeric'
+                            onChangeText={handlePriceChange}
+                            value={newItemPrice}
+                            style={{padding: 10}}
+                        />
+
+    </View>
+
+    <Text style={{padding:10,marginTop:10}}>Item Description</Text>
+            <View
+      style={{
+        backgroundColor: newItemDesc,
+        borderBottomColor: '#000000',
+        borderBottomWidth: 1,
+      }}>
+         <TextInput
+            editable
+            multiline
+            numberOfLines={4}
+            maxLength={40}
+            onChangeText={setNewItemDesc} // Corrected
+            value={newItemDesc}
+            style={styles.textInput}
+        />
+    </View>
+            </View>
+
+<Pressable onPress={handleSubmit} style={{
+  backgroundColor:'indigo',flex:.5,justifyContent:'center',alignItems:'center',borderRadius:10
+}}><Text style={{color:'white',fontSize:20, fontWeight:'bold'}}>Upload</Text></Pressable>
+            </View>
+
           </View>
           
 
         </View>
-        </TouchableWithoutFeedback>
+
       </Modal>
      
      </>
     );
 }
 const styles = StyleSheet.create({
+  textInput: {
+    padding: 10,
+    backgroundColor: '#FFFFFF', // Set a constant color
+    borderBottomColor: '#000000',
+    borderBottomWidth: 1,
+},
     badgeContainer: {
     position: 'absolute',
     right: 20, // Adjust as needed
