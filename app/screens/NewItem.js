@@ -11,6 +11,12 @@ function NewItem(props) {
     const [newItemDesc, setNewItemDesc] = useState('');
     const [newItemStock, setNewItemStock] = useState(1);
 
+    //this bit here if for form validation
+    const [stockFormValidation,setStockFormValidation] = useState(false)
+    const [priceFormValidation,setPriceFormValidation] = useState(false)
+    const [nameFormValidation,setNameFormValidation] = useState(false)
+    const [descFormValidation,setDescFormValidation] = useState(false)
+
     const categories = [
       { label: 'Clothing', value: 'Clothing' },
       { label: 'Jumpers', value: 'Jumpers' },
@@ -20,10 +26,39 @@ function NewItem(props) {
   ];
     const handlePriceChange = (text) => {
       const filteredText = text.replace(/[^0-9.]/g, ''); // Allows numbers and decimal point
+      if(filteredText.length >= 1){
+        setPriceFormValidation(true)
+      }else{
+        setPriceFormValidation(false)
+      }
       setNewItemPrice(filteredText);
   };
+  const handleNameChange = (text) => {
+  
+    if(text.length >= 1){
+      setNameFormValidation(true)
+    }else{
+      setNameFormValidation(false)
+    }
+    setNewItemName(text);
+};
+
+const handleDescChange = (text) => {
+
+  if(text.length >= 1){
+    setDescFormValidation(true)
+  }else{
+    setDescFormValidation(false)
+  }
+  setNewItemDesc(text);
+};
   const handleStockChange = (text) => {
     const filteredText = text.replace(/[^0-9.]/g, ''); // Allows numbers and decimal point
+    if(filteredText.length >= 1){
+      setStockFormValidation(true)
+    }else{
+      setStockFormValidation(false)
+    }
     setNewItemStock(filteredText);
 };
     const handleSubmit = () => {
@@ -58,6 +93,7 @@ function NewItem(props) {
           Alert.alert('Modal has been closed.');
           setModalVisible(!modalVisible);
         }}>
+             <TouchableWithoutFeedback onPress={() => setModalVisible(false)}> 
          
         <View style={styles.centeredView}>
           <View style={{...styles.modalView,backgroundColor:'white'}}>
@@ -76,9 +112,13 @@ function NewItem(props) {
             multiline
             numberOfLines={4}
             maxLength={40}
-            onChangeText={setNewItemName} // Corrected
+            onChangeText={handleNameChange} // Corrected
             value={newItemName}
-            style={styles.textInput}
+            style={
+              nameFormValidation == true ?
+              styles.formInputGood
+            : styles.formInputBad
+            }
         />
 
     </View>
@@ -94,7 +134,11 @@ function NewItem(props) {
                             keyboardType='numeric'
                             onChangeText={handlePriceChange}
                             value={newItemPrice}
-                            style={{padding: 10}}
+                            style={
+                              priceFormValidation == true ?
+                              styles.formInputGood
+                            : styles.formInputBad
+                            }
                         />
 
     </View>
@@ -111,9 +155,13 @@ function NewItem(props) {
             multiline
             numberOfLines={4}
             maxLength={40}
-            onChangeText={setNewItemDesc} // Corrected
+            onChangeText={handleDescChange} // Corrected
             value={newItemDesc}
-            style={styles.textInput}
+            style={
+              descFormValidation == true ?
+              styles.formInputGood
+            : styles.formInputBad
+            }
         />
     </View>
     <Text style={{padding:10,marginTop:10}}>Item Stock</Text>
@@ -128,7 +176,11 @@ function NewItem(props) {
                             keyboardType='numeric'
                             onChangeText={handleStockChange}
                             value={newItemStock}
-                            style={{padding: 10}}
+                            style={
+                              stockFormValidation == true ?
+                              styles.formInputGood
+                            : styles.formInputBad
+                            }
                         />
 
     </View>
@@ -142,22 +194,36 @@ function NewItem(props) {
         </View>
             </View>
 
-<Pressable onPress={handleSubmit} style={{
-  backgroundColor:'indigo',flex:.5,justifyContent:'center',alignItems:'center',borderRadius:10
-}}><Text style={{color:'white',fontSize:20, fontWeight:'bold'}}>Upload</Text></Pressable>
+<Pressable onPress={handleSubmit} style={
+stockFormValidation 
+&& nameFormValidation && priceFormValidation && descFormValidation
+
+? styles.buttonValidated : styles.buttonNotValidated
+
+}><Text style={{color:'white',fontSize:20, fontWeight:'bold'}}>Upload</Text></Pressable>
             </View>
 
           </View>
           
 
         </View>
-
+</TouchableWithoutFeedback>
       </Modal>
      
      </>
     );
 }
 const styles = StyleSheet.create({
+  formInputGood: {
+    borderBottomColor:'#1be067',
+    padding:10,
+    borderBottomWidth:2
+    },
+    formInputBad: {
+      padding:10,
+borderBottomColor:'black',
+borderBottomWidth:2
+    },
   textInput: {
     padding: 10,
     backgroundColor: '#FFFFFF', // Set a constant color
@@ -175,9 +241,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
 },
+
  badgeText: {
     color: 'white',
     fontSize: 10, // Adjust text size as needed
+},
+buttonValidated:{
+  backgroundColor:'indigo',flex:.5,justifyContent:'center',alignItems:'center',borderRadius:10
+},
+buttonNotValidated:{
+  backgroundColor:'grey',flex:.5,justifyContent:'center',alignItems:'center',borderRadius:10
 },
     modalView: {
         height:'80%',
@@ -207,6 +280,7 @@ const styles = StyleSheet.create({
 
 
     },
+
     backgroundImage:{
         backgroundColor:'white',
         flex:1,

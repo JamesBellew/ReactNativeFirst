@@ -76,7 +76,7 @@ const [itemViewing,setItemViewing]= useState({})
 const [cartItemsCount,setCartItemsCount]= useState(0)
 const [cartModalVisible,setCartModalVisible] = useState(false)
 const [cartItems, setCartItems] = useState([]);
-const [isNewItemModalShowing,setIsNewItemModalShowing] = useState(true)
+const [isNewItemModalShowing,setIsNewItemModalShowing] = useState(false)
 // State to keep track of the next cartItemId
 const [nextCartItemId, setNextCartItemId] = useState(1);
 let cartTotalPrice=0
@@ -394,9 +394,9 @@ items.filter(item => item.category === categorySelected).map((item, index) => (
                     <View style={styles.iconContainer}>
                         <Icon name="home" size={30} color="#373737" />
                     </View>
-                    <View style={styles.iconContainer}>
+                    <Pressable onPress={()=> setIsNewItemModalShowing(!isNewItemModalShowing)} style={styles.iconContainer}>
                     <FontAwesome name="plus" size={30} color="#373737" />
-                    </View>
+                    </Pressable>
                     <Pressable onPress={()=> setCartModalVisible(!cartModalVisible)} style={styles.iconContainer}>
                         {cartItemsCount>0 &&
                     <View style={styles.badgeContainer}>
