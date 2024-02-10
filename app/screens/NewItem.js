@@ -90,7 +90,7 @@ const handleDescChange = (text) => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
+          Alert.alert('Modal has been closed boiii.');
           setModalVisible(!modalVisible);
         }}>
              <TouchableWithoutFeedback onPress={() => setModalVisible(false)}> 
